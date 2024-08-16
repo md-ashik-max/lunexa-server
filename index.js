@@ -63,13 +63,24 @@ async function run() {
             res.send(result);
         });
 
-            // Filter products by category
-            app.get('/products/category/:category', async (req, res) => {
-                const category = req.params.category;
-                const query = { category: category };
-                const result = await allProductCollection.find(query).toArray();
-                res.send(result);
-            });
+         // Filter products by category
+         app.get('/products/category/:category', async (req, res) => {
+             const category = req.params.category;
+             const query = { category: category };
+             const result = await allProductCollection.find(query).toArray();
+             res.send(result);
+         });
+
+          // Filter products by price range
+          app.get('/products/price/:range', async (req, res) => {
+            const range = req.params.range;
+            let query = {};
+            if (range === 'low') query.price = { $lt: 500 };
+            if (range === 'mid') query.price = { $gte: 500, $lte: 1000 };
+            if (range === 'high') query.price = { $gt: 1000 };
+            const result = await allProductCollection.find(query).toArray();
+            res.send(result);
+        });
 
         // post user information
         app.post('/users', async (req, res) => {
