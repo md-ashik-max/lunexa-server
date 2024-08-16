@@ -30,12 +30,16 @@ async function run() {
         await client.connect();
 
         const allProductCollection = client.db("lunexa").collection("allProducts");
+        const usersCollection = client.db("lunexa").collection("users");
 
+        // find all product
 
         app.get('/allProducts', async (req, res) => {
             const result = await allProductCollection.find().toArray();
             res.send(result)
         })
+
+        // find popular or upcoming product
 
         app.get('/allProducts/banner/:status', async (req, res) => {
             const status = req.params.status;
@@ -43,6 +47,18 @@ async function run() {
             const result = await allProductCollection.find(query).toArray();
             res.send(result);
         });
+
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const query = { email: user.email }
+            const existingUser = await usersCollection.findOne(query)
+            if (existingUser) {
+                return res.send({ message: 'user already exists', insertedId: null })
+            }
+            const result = await usersCollection.insertOne(user)
+            res.send(result)
+
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
