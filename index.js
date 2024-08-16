@@ -63,6 +63,14 @@ async function run() {
             res.send(result);
         });
 
+            // Filter products by category
+            app.get('/products/category/:category', async (req, res) => {
+                const category = req.params.category;
+                const query = { category: category };
+                const result = await allProductCollection.find(query).toArray();
+                res.send(result);
+            });
+
         // post user information
         app.post('/users', async (req, res) => {
             const user = req.body;
