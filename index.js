@@ -29,13 +29,20 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
 
-        const allProductCollection = client.db("lunexa").collection("products");
+        const allProductCollection = client.db("lunexa").collection("allProducts");
 
 
-        app.get('/allProducts',async (req,res)=>{
+        app.get('/allProducts', async (req, res) => {
             const result = await allProductCollection.find().toArray();
             res.send(result)
         })
+
+        app.get('/allProducts/banner/:status', async (req, res) => {
+            const status = req.params.status;
+            const query = { status: status };
+            const result = await allProductCollection.find(query).toArray();
+            res.send(result);
+        });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
